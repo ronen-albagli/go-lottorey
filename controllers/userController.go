@@ -47,7 +47,22 @@ func CreateUser() gin.HandlerFunc {
 	}
 }
 
-func GetAUser() gin.HandlerFunc {
+func GetUserByEmail() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		email := c.Param("email")
+
+		result, err := service.FindUserByEmail(email)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, responses.UserResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+
+			return
+		}
+		c.JSON(http.StatusCreated, responses.UserResponse{Status: http.StatusCreated, Message: "success", Data: map[string]interface{}{"data": result}})
+	}
+}
+
+func GetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		userId := c.Param("userId")

@@ -44,3 +44,10 @@ require (
 	github.com/valyala/fasthttp v1.32.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 )
+
+require (
+	github.com/appleboy/gin-jwt v2.5.0+incompatible // indirect
+	github.com/appleboy/gin-jwt/v2 v2.8.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
+	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0 // indirect
+)

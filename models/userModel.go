@@ -7,7 +7,10 @@ import (
 )
 
 type User struct {
-	Id       primitive.ObjectID `json:"id,omitempty"`
-	Email    string             `json:"email,omitempty,unique" validate:"required"`
-	JoinDate time.Time          `json:"joinDate,omitempty" validate:"required"`
+	Id        primitive.ObjectID `json:"id,omitempty"`
+	FirstName string             `json:"firstName,omitempty"`
+	LastName  string             `json:"lastNameName,omitempty"`
+	Password  string             `json:"Password,omitempty"`
+	Email     string             `json:"email,omitempty,unique" validate:"required"`
+	JoinDate  time.Time          `json:"joinDate,omitempty" validate:"required"`
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -16,6 +17,10 @@ import (
 type NewUser struct {
 	Email    string
 	JoinDate time.Time
+}
+
+type getUser struct {
+	Email string
 }
 
 var userCollection *mongo.Collection = configs.GetCollection(configs.DB, "users")
@@ -48,5 +53,16 @@ func GenreateUser(c *gin.Context) (*mongo.InsertOneResult, error) {
 	fmt.Println(result)
 
 	return result, err
+}
 
+func FindUserByEmail(email string) (models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	var user models.User
+	defer cancel()
+
+	err := userCollection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+
+	fmt.Println(user)
+
+	return user, err
 }
