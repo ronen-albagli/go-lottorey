@@ -67,6 +67,7 @@ func GetUser() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		userId := c.Param("userId")
 		var user models.User
+
 		defer cancel()
 
 		objId, _ := primitive.ObjectIDFromHex(userId)
