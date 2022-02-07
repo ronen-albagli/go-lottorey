@@ -1,8 +1,8 @@
-package service
+package middlewares
 
 import (
-	"fmt"
 	"log"
+	"lotto/service"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -22,7 +22,7 @@ type User struct {
 	Email     string
 }
 
-var identityKey = "email"
+var identityKey = "id"
 
 func AuthMiddleWare() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
@@ -34,16 +34,15 @@ func AuthMiddleWare() *jwt.GinJWTMiddleware {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*User); ok {
 				return jwt.MapClaims{
-					identityKey: v.Email,
+					identityKey: v.UserName,
 				}
 			}
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
-			println(claims)
 			return &User{
-				Email: claims[identityKey].(string),
+				UserName: claims[identityKey].(string),
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
@@ -54,9 +53,7 @@ func AuthMiddleWare() *jwt.GinJWTMiddleware {
 			email := loginVals.Email
 			password := loginVals.Password
 
-			user, err := FindUserByEmail(email)
-
-			fmt.Println(user)
+			user, err := service.FindUserByEmail(email)
 
 			if err != nil {
 				return nil, err
@@ -72,17 +69,11 @@ func AuthMiddleWare() *jwt.GinJWTMiddleware {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			// fmt.Println(data.(*User))
-			// if v, ok := data.(*User); ok && v.Email == "ronen1@luhsa.com" {
-			// 	return true
-			// }
-
-			// return false
-			fmt.Println(data.(*User))
-			if _, ok := data.(*User); ok {
+			if v, ok := data.(*User); ok && v.UserName == "admin" {
 				return true
 			}
-			return true
+
+			return false
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
